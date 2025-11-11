@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${recipe.name} + ' - Recetas del Mundo'">Detalle de Receta</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="/" class="logo">🍳 Recetas del Mundo</a>
+            <ul class="nav-links">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/search">Buscar Recetas</a></li>
+                <li sec:authorize="isAuthenticated()"><a href="/dashboard">Dashboard</a></li>
+                <li sec:authorize="isAuthenticated()"><a href="/logout">Cerrar Sesión</a></li>
+                <li sec:authorize="!isAuthenticated()"><a href="/login">Iniciar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="container">
+        <div class="recipe-detail">
+            <div class="recipe-header">
+                <h1 th:text="${recipe.name}">Nombre de la Receta</h1>
+                <div class="recipe-main-image">
+                    📸 Imagen principal de la receta
+                </div>
+                <p class="recipe-description" th:text="${recipe.description}">Descripción detallada de la receta</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                <!-- Información básica -->
+                <div class="card">
+                    <h3>Información General</h3>
+                    <p><strong>🌍 Origen:</strong> <span th:text="${recipe.country}">País</span></p>
+                    <p><strong>🍽️ Tipo de cocina:</strong> <span th:text="${recipe.cuisineType}">Tipo</span></p>
+                    <p><strong>📊 Dificultad:</strong> 
+                        <span class="difficulty" th:class="'difficulty ' + ${recipe.difficulty}" th:text="${recipe.difficulty}">Dificultad</span>
+                    </p>
+                    <p><strong>⏰ Tiempo de cocción:</strong> <span th:text="${recipe.cookingTime} + ' minutos'">Tiempo</span></p>
+                    <p><strong>⭐ Popularidad:</strong> <span th:text="${recipe.popularity} + '/100'">Popularidad</span></p>
+                </div>
+
+                <!-- Ingredientes -->
+                <div class="ingredients-list">
+                    <h3>🥘 Ingredientes</h3>
+                    <ul>
+                        <li th:each="ingredient : ${recipe.ingredients}" th:text="${ingredient}">Ingrediente</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Instrucciones -->
+            <div class="instructions">
+                <h3>👨‍🍳 Instrucciones de Preparación</h3>
+                <div class="instructions-text" th:text="${recipe.instructions}">
+                    Instrucciones detalladas de preparación...
+                </div>
+            </div>
+
+            <!-- Acciones -->
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="/search" class="btn btn-secondary">← Volver a búsqueda</a>
+                <a href="/" class="btn">🏠 Ir al inicio</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Recetas del Mundo. Todos los derechos reservados.</p>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

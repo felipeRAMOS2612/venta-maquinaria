@@ -1,11 +1,102 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title>Home Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recetas del Mundo - Inicio</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
 </head>
 <body>
-<h1>Welcome to Venta Maquinaria</h1>
-<p>Hello, <span th:text="${name}">User</span>!</p>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="/" class="logo">🍳 Recetas del Mundo</a>
+            <ul class="nav-links">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/search">Buscar Recetas</a></li>
+                <li sec:authorize="isAuthenticated()"><a href="/dashboard">Dashboard</a></li>
+                <li sec:authorize="isAuthenticated()"><a href="/logout">Cerrar Sesión</a></li>
+                <li sec:authorize="!isAuthenticated()"><a href="/login">Iniciar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="container">
+        <h1>Bienvenido a Recetas del Mundo</h1>
+        
+        <div class="card">
+            <h2>Descubre sabores increíbles de todo el mundo</h2>
+            <p>Explora nuestra colección de recetas auténticas, desde la tradicional pasta italiana hasta los exóticos sabores tailandeses. ¡Tu próxima comida favorita te está esperando!</p>
+            <a href="/search" class="btn">Explorar Recetas</a>
+            <a href="/login" class="btn btn-secondary" sec:authorize="!isAuthenticated()">Iniciar Sesión</a>
+        </div>
+
+        <!-- Banner comercial -->
+        <div class="commercial-banner">
+            <h3 class="banner-title">¡Oferta Especial!</h3>
+            <p class="banner-text">Descubre los mejores utensilios de cocina con un 30% de descuento. ¡Mejora tu experiencia culinaria hoy!</p>
+            <a href="#" class="btn">Ver Ofertas</a>
+        </div>
+
+        <!-- Recetas más recientes -->
+        <section>
+            <h2>Recetas Más Recientes</h2>
+            <div class="recipes-grid">
+                <div th:each="recipe : ${recentRecipes}" class="recipe-card">
+                    <div class="recipe-image">
+                        📸 Imagen de receta
+                    </div>
+                    <div class="recipe-info">
+                        <h3 class="recipe-title" th:text="${recipe.name}">Nombre de la Receta</h3>
+                        <p class="recipe-description" th:text="${recipe.description}">Descripción de la receta</p>
+                        <div class="recipe-meta">
+                            <span class="difficulty" th:class="'difficulty ' + ${recipe.difficulty}" th:text="${recipe.difficulty}">Dificultad</span>
+                            <span class="cooking-time" th:text="${recipe.cookingTime} + ' min'">Tiempo</span>
+                        </div>
+                        <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn" sec:authorize="isAuthenticated()">Ver Detalles</a>
+                        <a href="/login" class="btn btn-secondary" sec:authorize="!isAuthenticated()">Inicia sesión para ver</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Banner comercial 2 -->
+        <div class="commercial-banner" style="background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);">
+            <h3 class="banner-title">Suscríbete a nuestro Newsletter</h3>
+            <p class="banner-text">Recibe las mejores recetas directamente en tu correo. ¡Más de 50,000 chefs ya se han unido!</p>
+            <a href="#" class="btn">Suscribirse Gratis</a>
+        </div>
+
+        <!-- Recetas más populares -->
+        <section>
+            <h2>Recetas Más Populares</h2>
+            <div class="recipes-grid">
+                <div th:each="recipe : ${popularRecipes}" class="recipe-card">
+                    <div class="recipe-image">
+                        📸 Imagen de receta
+                    </div>
+                    <div class="recipe-info">
+                        <h3 class="recipe-title" th:text="${recipe.name}">Nombre de la Receta</h3>
+                        <p class="recipe-description" th:text="${recipe.description}">Descripción de la receta</p>
+                        <div class="recipe-meta">
+                            <span class="difficulty" th:class="'difficulty ' + ${recipe.difficulty}" th:text="${recipe.difficulty}">Dificultad</span>
+                            <span class="cooking-time" th:text="${recipe.cookingTime} + ' min'">Tiempo</span>
+                        </div>
+                        <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn" sec:authorize="isAuthenticated()">Ver Detalles</a>
+                        <a href="/login" class="btn btn-secondary" sec:authorize="!isAuthenticated()">Inicia sesión para ver</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Recetas del Mundo. Todos los derechos reservados.</p>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script th:src="@{/js/app.js}"></script>
 </body>
 </html>

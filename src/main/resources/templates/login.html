@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Recetas del Mundo</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="/" class="logo">🍳 Recetas del Mundo</a>
+            <ul class="nav-links">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/search">Buscar Recetas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1 class="auth-title">Iniciar Sesión</h1>
+            
+            <!-- Mensajes de error y éxito -->
+            <div th:if="${param.error}" class="alert alert-error">
+                <span th:text="${errorMessage} ?: 'Usuario o contraseña incorrectos'">Error</span>
+            </div>
+            
+            <div th:if="${param.logout}" class="alert alert-success">
+                <span th:text="${logoutMessage} ?: 'Has cerrado sesión exitosamente'">Logout</span>
+            </div>
+            
+            <div th:if="${successMessage}" class="alert alert-success">
+                <span th:text="${successMessage}">Éxito</span>
+            </div>
+
+            <!-- Formulario de login -->
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label for="username" class="form-label">Email:</label>
+                    <input type="email" id="username" name="username" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Contraseña:</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">Iniciar Sesión</button>
+            </form>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <p>¿No tienes cuenta? <a href="/register" style="color: #667eea; text-decoration: none;">Regístrate aquí</a></p>
+            </div>
+
+            <!-- Información de usuarios de prueba -->
+            <div class="alert alert-info" style="margin-top: 2rem;">
+                <strong>Usuarios de prueba:</strong><br>
+                <strong>Administrador:</strong> admin@recetas.com / admin123<br>
+                <strong>Usuario:</strong> juan@recetas.com / user123<br>
+                <strong>Usuario:</strong> maria@recetas.com / user123
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Recetas del Mundo. Todos los derechos reservados.</p>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

@@ -38,4 +38,31 @@ public class UserService {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    
+    public void initializeTestUsers() {
+        if (userRepository.count() == 0) {
+            List<User> testUsers = List.of(
+                User.builder()
+                    .name("Administrador")
+                    .email("admin@recetas.com")
+                    .password("admin123")
+                    .rol(User.Rol.DUEÑO)
+                    .build(),
+                User.builder()
+                    .name("Juan Pérez")
+                    .email("juan@recetas.com")
+                    .password("user123")
+                    .rol(User.Rol.AGRICULTOR)
+                    .build(),
+                User.builder()
+                    .name("María García")
+                    .email("maria@recetas.com")
+                    .password("user123")
+                    .rol(User.Rol.AGRICULTOR)
+                    .build()
+            );
+            
+            testUsers.forEach(this::saveUser);
+        }
+    }
 }

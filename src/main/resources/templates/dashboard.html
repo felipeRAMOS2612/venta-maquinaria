@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Recetas del Mundo</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="/" class="logo">🍳 Recetas del Mundo</a>
+            <ul class="nav-links">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/search">Buscar Recetas</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/logout">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="container">
+        <h1>Panel de Usuario</h1>
+        
+        <div class="card">
+            <h2>¡Bienvenido de vuelta! 👋</h2>
+            <p>Hola <strong sec:authentication="name">Usuario</strong>, gracias por iniciar sesión.</p>
+            <p>Ahora puedes acceder a todos los detalles de nuestras recetas exclusivas.</p>
+            
+            <div style="margin-top: 2rem;">
+                <p><strong>Tu rol:</strong> <span sec:authentication="authorities">ROLE_USER</span></p>
+                <p><strong>Estado:</strong> <span style="color: #28a745;">✅ Autenticado</span></p>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <div class="card">
+                <h3>🔍 Explorar Recetas</h3>
+                <p>Busca entre nuestra amplia colección de recetas de todo el mundo.</p>
+                <a href="/search" class="btn">Buscar Recetas</a>
+            </div>
+
+            <div class="card">
+                <h3>🏠 Página Principal</h3>
+                <p>Vuelve al inicio para ver las recetas más recientes y populares.</p>
+                <a href="/" class="btn btn-secondary">Ir al Inicio</a>
+            </div>
+
+            <div class="card" sec:authorize="hasRole('ADMIN')">
+                <h3>⚙️ Panel de Administrador</h3>
+                <p>Como administrador, tienes acceso a funciones especiales del sistema.</p>
+                <a href="#" class="btn" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);">Admin Panel</a>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="card">
+            <h3>📊 Estadísticas de Uso</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; text-align: center;">
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+                    <h4 style="color: #667eea; font-size: 2rem; margin-bottom: 0.5rem;">5</h4>
+                    <p>Recetas disponibles</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+                    <h4 style="color: #667eea; font-size: 2rem; margin-bottom: 0.5rem;">3</h4>
+                    <p>Tipos de cocina</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+                    <h4 style="color: #667eea; font-size: 2rem; margin-bottom: 0.5rem;">5</h4>
+                    <p>Países representados</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acceso rápido -->
+        <div class="card">
+            <h3>⚡ Acceso Rápido</h3>
+            <p>Enlaces directos a las funciones más utilizadas:</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;">
+                <a href="/search?cuisineType=ITALIANA" class="btn btn-secondary">Recetas Italianas</a>
+                <a href="/search?cuisineType=MEXICANA" class="btn btn-secondary">Recetas Mexicanas</a>
+                <a href="/search?difficulty=FACIL" class="btn btn-secondary">Recetas Fáciles</a>
+                <a href="/search?difficulty=DIFICIL" class="btn btn-secondary">Recetas Desafiantes</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Recetas del Mundo. Todos los derechos reservados.</p>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

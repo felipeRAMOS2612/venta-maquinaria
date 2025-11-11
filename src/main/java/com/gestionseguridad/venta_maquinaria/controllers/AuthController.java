@@ -1,38 +1,51 @@
 package com.gestionseguridad.venta_maquinaria.controllers;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.gestionseguridad.venta_maquinaria.models.User;
+import com.gestionseguridad.venta_maquinaria.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/auth")
+@Controller
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
+    @Autowired
+    private UserService userService;
 
-    public AuthController(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
+    @GetMapping("/login")
+    public String loginPage(@RequestParam(value = "error", required = false) String error,
+                           @RequestParam(value = "logout", required = false) String logout,
+                           Model model) {
+        if (error != null) {
+            model.addAttribute("errorMessage", "Usuario o contraseña incorrectos");
+        }
+        if (logout != null) {
+            model.addAttribute("logoutMessage", "Has cerrado sesión exitosamente");
+        }
+        return "login";
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return ResponseEntity.ok("User logged in successfully");
+    @GetMapping("/dashboard")
+    public String dashboard() {
+        return "dashboard";
     }
 
-    public static class LoginRequest {
-        private String email;
-        private String password;
+    @PostMapping("/register")
+    public String registerUser(@ModelAttribute User user, Model model) {
+        try {
+            userService.saveUser(user);
+            model.addAttribute("successMessage", "Usuario registrado con éxito");
+            return "login";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Error al registrar el usuario: " + e.getMessage());
+            return "register";
+        }
+    }
 
-        public String getEmail() { return email; }
-        public void setEmail(String email) { this.email = email; }
-        public String getPassword() { return password; }
-        public void setPassword(String password) { this.password = password; }
+    @GetMapping("/register")
+    public String registerPage(Model model) {
+        model.addAttribute("user", new User());
+        return "register";
     }
 }

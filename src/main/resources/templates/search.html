@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Recetas - Recetas del Mundo</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="/" class="logo">🍳 Recetas del Mundo</a>
+            <ul class="nav-links">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/search">Buscar Recetas</a></li>
+                <li sec:authorize="isAuthenticated()"><a href="/dashboard">Dashboard</a></li>
+                <li sec:authorize="isAuthenticated()"><a href="/logout">Cerrar Sesión</a></li>
+                <li sec:authorize="!isAuthenticated()"><a href="/login">Iniciar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Buscar Recetas</h1>
+        
+        <form action="/search/results" method="get" class="search-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name" class="form-label">Buscar por nombre:</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Ej: Pasta, Tacos, Sushi...">
+                </div>
+            </div>
+            
+            <button type="submit" class="btn">🔍 Buscar Recetas</button>
+        </form>
+
+        <!-- Mostrar recetas -->
+        <div th:if="${recipes != null}">
+            <h2 th:if="${searchPerformed != null and searchPerformed}">
+                Resultados de búsqueda (<span th:text="${#lists.size(recipes)}">0</span> recetas encontradas)
+            </h2>
+            <h2 th:unless="${searchPerformed != null and searchPerformed}">
+                Todas nuestras recetas
+            </h2>
+
+            <!-- Grid de recetas -->
+            <div class="recipes-grid" th:if="${not #lists.isEmpty(recipes)}">
+                <div th:each="recipe : ${recipes}" class="recipe-card">
+                    <div class="recipe-image">
+                        📸 Imagen de receta
+                    </div>
+                    <div class="recipe-info">
+                        <h3 class="recipe-title" th:text="${recipe.name}">Nombre de la Receta</h3>
+                        <p class="recipe-description" th:text="${recipe.description}">Descripción de la receta</p>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <span style="background: #e9ecef; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem; margin-right: 0.5rem;" 
+                                  th:text="${recipe.cuisineType}">Tipo cocina</span>
+                            <span style="background: #e9ecef; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem;" 
+                                  th:text="${recipe.country}">País</span>
+                        </div>
+                        
+                        <div class="recipe-meta">
+                            <span class="difficulty" th:text="${recipe.difficulty}">Dificultad</span>
+                            <span class="cooking-time" th:text="${recipe.cookingTime} + ' min'">Tiempo</span>
+                        </div>
+                        
+                        <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn" sec:authorize="isAuthenticated()">Ver Detalles</a>
+                        <a href="/login" class="btn btn-secondary" sec:authorize="!isAuthenticated()">Inicia sesión para ver</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mensaje si no hay resultados -->
+            <div th:if="${#lists.isEmpty(recipes)}" class="card" style="text-align: center;">
+                <h3>😔 No encontramos recetas</h3>
+                <p>Prueba con otros términos de búsqueda.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

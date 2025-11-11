@@ -42,12 +42,22 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/admin/**").hasRole("OWNER")
-                .requestMatchers("/api/farmer/**").hasRole("FARMER")
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/", "/search", "/search/results", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/recipe/**", "/dashboard").authenticated()
+                .requestMatchers("/admin/**").hasRole("DUEÑO")
                 .anyRequest().authenticated()
             )
-            .httpBasic(httpBasic -> {});
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/dashboard", true)
+                .failureUrl("/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+                .permitAll()
+            );
         return http.build();
     }
 
