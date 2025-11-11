@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscar Recetas - Recetas del Mundo</title>
+    <title>Buscar Maquinaria - AgroRent</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
     <header class="header">
         <nav class="nav">
-            <a href="/" class="logo">🍳 Recetas del Mundo</a>
+            <a href="/" class="logo">🚜 AgroRent</a>
             <ul class="nav-links">
                 <li><a href="/">Inicio</a></li>
-                <li><a href="/search">Buscar Recetas</a></li>
+                <li><a href="/search">Buscar Maquinaria</a></li>
                 <li sec:authorize="isAuthenticated()"><a href="/dashboard">Dashboard</a></li>
                 <li sec:authorize="isAuthenticated()"><a href="/logout">Cerrar Sesión</a></li>
                 <li sec:authorize="!isAuthenticated()"><a href="/login">Iniciar Sesión</a></li>
@@ -21,60 +21,95 @@
     </header>
 
     <div class="container">
-        <h1>Buscar Recetas</h1>
+        <h1>Buscar Maquinaria Agrícola</h1>
         
         <form action="/search/results" method="get" class="search-form">
             <div class="form-row">
                 <div class="form-group">
                     <label for="name" class="form-label">Buscar por nombre:</label>
-                    <input type="text" id="name" name="name" class="form-control" placeholder="Ej: Pasta, Tacos, Sushi...">
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Ej: Tractor, Cosechadora, Sembradora...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="type" class="form-label">Tipo de maquinaria:</label>
+                    <select id="type" name="type" class="form-control">
+                        <option value="">Seleccionar...</option>
+                        <option value="TRACTOR">TRACTOR</option>
+                        <option value="COSECHADORA">COSECHADORA</option>
+                        <option value="SEMBRADORA">SEMBRADORA</option>
+                        <option value="CULTIVADOR">CULTIVADOR</option>
+                        <option value="ARADO">ARADO</option>
+                        <option value="FUMIGADORA">FUMIGADORA</option>
+                        <option value="SEGADORA">SEGADORA</option>
+                        <option value="RASTRA">RASTRA</option>
+                        <option value="EMPACADORA">EMPACADORA</option>
+                        <option value="EXCAVADORA">EXCAVADORA</option>
+                        <option value="MOTONIVELADORA">MOTONIVELADORA</option>
+                        <option value="RIEGO">RIEGO</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="brand" class="form-label">Marca:</label>
+                    <input type="text" id="brand" name="brand" class="form-control" placeholder="Ej: John Deere, Case, New Holland...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="location" class="form-label">Ubicación:</label>
+                    <input type="text" id="location" name="location" class="form-control" placeholder="Ej: Santiago, Rancagua, Temuco...">
                 </div>
             </div>
             
-            <button type="submit" class="btn">🔍 Buscar Recetas</button>
+            <button type="submit" class="btn">🔍 Buscar Maquinaria</button>
         </form>
 
-        <!-- Mostrar recetas -->
-        <div th:if="${recipes != null}">
+        <!-- Mostrar maquinaria -->
+        <div th:if="${machineries != null}">
             <h2 th:if="${searchPerformed != null and searchPerformed}">
-                Resultados de búsqueda (<span th:text="${#lists.size(recipes)}">0</span> recetas encontradas)
+                Resultados de búsqueda (<span th:text="${#lists.size(machineries)}">0</span> máquinas encontradas)
             </h2>
             <h2 th:unless="${searchPerformed != null and searchPerformed}">
-                Todas nuestras recetas
+                Toda nuestra maquinaria disponible
             </h2>
 
-            <!-- Grid de recetas -->
-            <div class="recipes-grid" th:if="${not #lists.isEmpty(recipes)}">
-                <div th:each="recipe : ${recipes}" class="recipe-card">
+            <!-- Grid de maquinaria -->
+            <div class="recipes-grid" th:if="${not #lists.isEmpty(machineries)}">
+                <div th:each="machinery : ${machineries}" class="recipe-card">
                     <div class="recipe-image">
-                        📸 Imagen de receta
+                        🚜 Imagen de maquinaria
                     </div>
                     <div class="recipe-info">
-                        <h3 class="recipe-title" th:text="${recipe.name}">Nombre de la Receta</h3>
-                        <p class="recipe-description" th:text="${recipe.description}">Descripción de la receta</p>
+                        <h3 class="recipe-title" th:text="${machinery.name}">Nombre de la Maquinaria</h3>
+                        <p class="recipe-description" th:text="${machinery.description}">Descripción de la maquinaria</p>
                         
                         <div style="margin-bottom: 1rem;">
                             <span style="background: #e9ecef; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem; margin-right: 0.5rem;" 
-                                  th:text="${recipe.cuisineType}">Tipo cocina</span>
+                                  th:text="${machinery.type}">Tipo</span>
+                            <span style="background: #e9ecef; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem; margin-right: 0.5rem;" 
+                                  th:text="${machinery.brand}">Marca</span>
                             <span style="background: #e9ecef; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem;" 
-                                  th:text="${recipe.country}">País</span>
+                                  th:text="${machinery.location}">Ubicación</span>
                         </div>
                         
                         <div class="recipe-meta">
-                            <span class="difficulty" th:text="${recipe.difficulty}">Dificultad</span>
-                            <span class="cooking-time" th:text="${recipe.cookingTime} + ' min'">Tiempo</span>
+                            <span class="difficulty" th:text="${machinery.condition}">Estado</span>
+                            <span class="cooking-time" th:text="'$' + ${machinery.dailyRentalPrice} + '/día'">Precio diario</span>
                         </div>
                         
-                        <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn" sec:authorize="isAuthenticated()">Ver Detalles</a>
+                        <div style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                            <small style="color: #666;">Propietario: <span th:text="${machinery.ownerName}">Dueño</span></small>
+                        </div>
+                        
+                        <a th:href="@{/machinery/{id}(id=${machinery.id})}" class="btn" sec:authorize="isAuthenticated()">Ver Detalles</a>
                         <a href="/login" class="btn btn-secondary" sec:authorize="!isAuthenticated()">Inicia sesión para ver</a>
                     </div>
                 </div>
             </div>
 
             <!-- Mensaje si no hay resultados -->
-            <div th:if="${#lists.isEmpty(recipes)}" class="card" style="text-align: center;">
-                <h3>😔 No encontramos recetas</h3>
-                <p>Prueba con otros términos de búsqueda.</p>
+            <div th:if="${#lists.isEmpty(machineries)}" class="card" style="text-align: center;">
+                <h3>😔 No encontramos maquinaria</h3>
+                <p>Prueba con otros términos de búsqueda o amplía tus criterios.</p>
             </div>
         </div>
     </div>

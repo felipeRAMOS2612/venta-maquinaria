@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recetas del Mundo - Inicio</title>
+    <title>AgroRent - Alquiler de Maquinaria Agrícola</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <nav class="nav">
-            <a href="/" class="logo">🍳 Recetas del Mundo</a>
+            <a href="/" class="logo">🚜 AgroRent</a>
             <ul class="nav-links">
                 <li><a href="/">Inicio</a></li>
-                <li><a href="/search">Buscar Recetas</a></li>
+                <li><a href="/search">Buscar Maquinaria</a></li>
                 <li sec:authorize="isAuthenticated()"><a href="/dashboard">Dashboard</a></li>
                 <li sec:authorize="isAuthenticated()"><a href="/logout">Cerrar Sesión</a></li>
                 <li sec:authorize="!isAuthenticated()"><a href="/login">Iniciar Sesión</a></li>
@@ -23,38 +23,44 @@
 
     <!-- Contenido principal -->
     <main class="container">
-        <h1>Bienvenido a Recetas del Mundo</h1>
+        <h1>Bienvenido a AgroRent</h1>
         
         <div class="card">
-            <h2>Descubre sabores increíbles de todo el mundo</h2>
-            <p>Explora nuestra colección de recetas auténticas, desde la tradicional pasta italiana hasta los exóticos sabores tailandeses. ¡Tu próxima comida favorita te está esperando!</p>
-            <a href="/search" class="btn">Explorar Recetas</a>
+            <h2>Alquila la maquinaria agrícola que necesitas</h2>
+            <p>Conectamos a dueños de maquinaria agrícola ociosa con agricultores que la necesitan. Accede a tractores, cosechadoras, sembradoras y más sin la gran inversión inicial. ¡Impulsa tu producción agrícola hoy!</p>
+            <a href="/search" class="btn">Explorar Maquinaria</a>
             <a href="/login" class="btn btn-secondary" sec:authorize="!isAuthenticated()">Iniciar Sesión</a>
         </div>
 
         <!-- Banner comercial -->
         <div class="commercial-banner">
-            <h3 class="banner-title">¡Oferta Especial!</h3>
-            <p class="banner-text">Descubre los mejores utensilios de cocina con un 30% de descuento. ¡Mejora tu experiencia culinaria hoy!</p>
+            <h3 class="banner-title">¡Oferta de Temporada!</h3>
+            <p class="banner-text">Alquila maquinaria para la siembra de primavera con un 20% de descuento. ¡Prepara tus cultivos con la mejor tecnología!</p>
             <a href="#" class="btn">Ver Ofertas</a>
         </div>
 
-        <!-- Recetas más recientes -->
+        <!-- Maquinaria más reciente -->
         <section>
-            <h2>Recetas Más Recientes</h2>
+            <h2>Maquinaria Agregada Recientemente</h2>
             <div class="recipes-grid">
-                <div th:each="recipe : ${recentRecipes}" class="recipe-card">
+                <div th:each="machinery : ${recentMachineries}" class="recipe-card">
                     <div class="recipe-image">
-                        📸 Imagen de receta
+                        � Imagen de maquinaria
                     </div>
                     <div class="recipe-info">
-                        <h3 class="recipe-title" th:text="${recipe.name}">Nombre de la Receta</h3>
-                        <p class="recipe-description" th:text="${recipe.description}">Descripción de la receta</p>
-                        <div class="recipe-meta">
-                            <span class="difficulty" th:class="'difficulty ' + ${recipe.difficulty}" th:text="${recipe.difficulty}">Dificultad</span>
-                            <span class="cooking-time" th:text="${recipe.cookingTime} + ' min'">Tiempo</span>
+                        <h3 class="recipe-title" th:text="${machinery.name}">Nombre de la Maquinaria</h3>
+                        <p class="recipe-description" th:text="${machinery.description}">Descripción de la maquinaria</p>
+                        <div style="margin-bottom: 1rem;">
+                            <span style="background: #e9ecef; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem; margin-right: 0.5rem;" 
+                                  th:text="${machinery.type}">Tipo</span>
+                            <span style="background: #e9ecef; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem;" 
+                                  th:text="${machinery.location}">Ubicación</span>
                         </div>
-                        <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn" sec:authorize="isAuthenticated()">Ver Detalles</a>
+                        <div class="recipe-meta">
+                            <span class="difficulty" th:text="${machinery.condition}">Estado</span>
+                            <span class="cooking-time" th:text="'$' + ${machinery.dailyRentalPrice} + '/día'">Precio</span>
+                        </div>
+                        <a th:href="@{/machinery/{id}(id=${machinery.id})}" class="btn" sec:authorize="isAuthenticated()">Ver Detalles</a>
                         <a href="/login" class="btn btn-secondary" sec:authorize="!isAuthenticated()">Inicia sesión para ver</a>
                     </div>
                 </div>
@@ -62,28 +68,34 @@
         </section>
 
         <!-- Banner comercial 2 -->
-        <div class="commercial-banner" style="background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);">
-            <h3 class="banner-title">Suscríbete a nuestro Newsletter</h3>
-            <p class="banner-text">Recibe las mejores recetas directamente en tu correo. ¡Más de 50,000 chefs ya se han unido!</p>
-            <a href="#" class="btn">Suscribirse Gratis</a>
+        <div class="commercial-banner" style="background: linear-gradient(135deg, #00b894 0%, #00a085 100%);">
+            <h3 class="banner-title">Únete a nuestra red de agricultores</h3>
+            <p class="banner-text">Más de 1,500 productores ya confían en nosotros. ¡Aumenta la eficiencia de tu producción agrícola!</p>
+            <a href="#" class="btn">Registrarse Gratis</a>
         </div>
 
-        <!-- Recetas más populares -->
+        <!-- Maquinaria más popular -->
         <section>
-            <h2>Recetas Más Populares</h2>
+            <h2>Maquinaria Más Solicitada</h2>
             <div class="recipes-grid">
-                <div th:each="recipe : ${popularRecipes}" class="recipe-card">
+                <div th:each="machinery : ${popularMachineries}" class="recipe-card">
                     <div class="recipe-image">
-                        📸 Imagen de receta
+                        � Imagen de maquinaria
                     </div>
                     <div class="recipe-info">
-                        <h3 class="recipe-title" th:text="${recipe.name}">Nombre de la Receta</h3>
-                        <p class="recipe-description" th:text="${recipe.description}">Descripción de la receta</p>
-                        <div class="recipe-meta">
-                            <span class="difficulty" th:class="'difficulty ' + ${recipe.difficulty}" th:text="${recipe.difficulty}">Dificultad</span>
-                            <span class="cooking-time" th:text="${recipe.cookingTime} + ' min'">Tiempo</span>
+                        <h3 class="recipe-title" th:text="${machinery.name}">Nombre de la Maquinaria</h3>
+                        <p class="recipe-description" th:text="${machinery.description}">Descripción de la maquinaria</p>
+                        <div style="margin-bottom: 1rem;">
+                            <span style="background: #e9ecef; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem; margin-right: 0.5rem;" 
+                                  th:text="${machinery.type}">Tipo</span>
+                            <span style="background: #e9ecef; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem;" 
+                                  th:text="${machinery.location}">Ubicación</span>
                         </div>
-                        <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn" sec:authorize="isAuthenticated()">Ver Detalles</a>
+                        <div class="recipe-meta">
+                            <span class="difficulty" th:text="${machinery.condition}">Estado</span>
+                            <span class="cooking-time" th:text="'$' + ${machinery.dailyRentalPrice} + '/día'">Precio</span>
+                        </div>
+                        <a th:href="@{/machinery/{id}(id=${machinery.id})}" class="btn" sec:authorize="isAuthenticated()">Ver Detalles</a>
                         <a href="/login" class="btn btn-secondary" sec:authorize="!isAuthenticated()">Inicia sesión para ver</a>
                     </div>
                 </div>
@@ -93,7 +105,7 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <p>&copy; 2025 Recetas del Mundo. Todos los derechos reservados.</p>
+        <p>&copy; 2025 AgroRent - Alquiler de Maquinaria Agrícola. Todos los derechos reservados.</p>
     </footer>
     
     <!-- JavaScript -->
