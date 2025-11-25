@@ -1,6 +1,6 @@
 package com.gestionseguridad.venta_maquinaria.controllers;
 
-import com.gestionseguridad.venta_maquinaria.services.RecipeService;
+import com.gestionseguridad.venta_maquinaria.services.MachineryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
     
     @Autowired
-    private RecipeService recipeService;
+    private MachineryService machineryService;
     
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("recentRecipes", recipeService.getRecentRecipes().stream().limit(6).toList());
-        model.addAttribute("popularRecipes", recipeService.getPopularRecipes().stream().limit(6).toList());
+        System.out.println("Accessing home page");
+        model.addAttribute("recentMachineries", machineryService.getRecentMachinery());
+        model.addAttribute("popularMachineries", machineryService.getPopularMachinery());
         return "index";
     }
 }

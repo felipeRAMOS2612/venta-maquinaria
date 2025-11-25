@@ -1,6 +1,5 @@
 package com.gestionseguridad.venta_maquinaria.config;
 
-import com.gestionseguridad.venta_maquinaria.services.RecipeService;
 import com.gestionseguridad.venta_maquinaria.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,12 +11,9 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private RecipeService recipeService;
-
     @Override
     public void run(String... args) throws Exception {
         userService.initializeTestUsers();
-        recipeService.initializeStaticData();
+        // La maquinaria se inicializa automáticamente con @PostConstruct en MachineryService
     }
 }
