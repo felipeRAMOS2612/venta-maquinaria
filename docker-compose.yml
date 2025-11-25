@@ -1,13 +1,19 @@
+version: '3.8'
+
 services:
-  web:
-    build: .
+  db:
+    image: mysql:8.0
+    container_name: mysql-venta
     restart: always
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
     environment:
-      DB_HOST: db
-      DB_USER: user
-      DB_PASSWORD: password
-      DB_NAME: venta_maquinaria
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: venta_maquinaria_db
+      MYSQL_USER: venta
+      MYSQL_PASSWORD: venta123
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

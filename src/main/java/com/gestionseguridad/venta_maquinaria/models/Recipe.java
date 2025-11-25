@@ -47,7 +47,7 @@ public class Recipe {
     }
     
     public enum CuisineType {
-        ITALIANA, MEXICANA, CHINA, JAPONESA, FRANCESA, MEDITERRANEA, PERUANA, THAI, INDIA, ESPAÑOLA
+        ITALIANA, MEXICANA, CHINA, JAPONESA, FRANCESA, MEDITERRANEA, PERUANA, THAI, INDIA, ESPANOLA
     }
     
     public enum Difficulty {

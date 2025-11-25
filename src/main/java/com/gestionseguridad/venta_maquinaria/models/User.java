@@ -21,6 +21,6 @@ public class User {
     private Rol rol;
 
     public enum Rol {
-        DUEÑO, AGRICULTOR
+        DUENO, AGRICULTOR
     }
 }
