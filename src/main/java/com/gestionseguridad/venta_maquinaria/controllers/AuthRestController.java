@@ -5,7 +5,6 @@ import com.gestionseguridad.venta_maquinaria.dto.AuthResponse;
 import com.gestionseguridad.venta_maquinaria.models.User;
 import com.gestionseguridad.venta_maquinaria.securities.JwtUtil;
 import com.gestionseguridad.venta_maquinaria.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,17 +18,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class AuthRestController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+    private final UserService userService;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
-
-    @Autowired
-    private UserService userService;
+    public AuthRestController(AuthenticationManager authenticationManager,
+                              JwtUtil jwtUtil,
+                              UserService userService) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+        this.userService = userService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
@@ -49,7 +48,6 @@ public class AuthRestController {
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
-    // Endpoint de registro REST opcional
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user) {
         User saved = userService.saveUser(user);

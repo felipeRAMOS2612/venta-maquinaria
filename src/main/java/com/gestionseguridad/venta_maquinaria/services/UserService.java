@@ -46,7 +46,7 @@ public class UserService {
                     .name("Administrador")
                     .email("admin@recetas.com")
                     .password("admin123")
-                    .rol(User.Rol.DUEÑO)
+                    .rol(User.Rol.DUENO)
                     .build(),
                 User.builder()
                     .name("Juan Pérez")

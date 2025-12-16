@@ -1,15 +1,17 @@
 package com.gestionseguridad.venta_maquinaria.config;
 
 import com.gestionseguridad.venta_maquinaria.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public DataInitializer(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public void run(String... args) throws Exception {

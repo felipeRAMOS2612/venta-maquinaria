@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -41,12 +42,15 @@ public class SecurityConfig {
         };
     }
 
+    @java.lang.SuppressWarnings("java:S4502")
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/api/**") 
+            )
             .authorizeHttpRequests(auth -> auth
-                // Público (vistas + recursos)
+                // Público (vistas + recursos estáticos)
                 .requestMatchers("/", "/search", "/search/**",
                         "/login", "/register",
                         "/css/**", "/js/**", "/images/**").permitAll()
@@ -56,7 +60,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/**").authenticated()
                 // Vistas privadas
                 .requestMatchers("/recipe/**", "/dashboard").authenticated()
-                .requestMatchers("/admin/**").hasRole("DUEÑO")
+                .requestMatchers("/admin/**").hasRole("DUENO") 
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -84,9 +88,11 @@ public class SecurityConfig {
         AuthenticationManagerBuilder authBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
 
-        authBuilder
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder);
+        @SuppressWarnings("unchecked")
+        DaoAuthenticationConfigurer<AuthenticationManagerBuilder, UserDetailsService> configurer =
+                authBuilder.userDetailsService(userDetailsService);
+        
+        configurer.passwordEncoder(passwordEncoder);
 
         return authBuilder.build();
     }

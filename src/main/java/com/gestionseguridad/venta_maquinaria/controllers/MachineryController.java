@@ -2,7 +2,6 @@ package com.gestionseguridad.venta_maquinaria.controllers;
 
 import com.gestionseguridad.venta_maquinaria.models.Machinery;
 import com.gestionseguridad.venta_maquinaria.services.MachineryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +14,11 @@ import java.util.Optional;
 @Controller
 public class MachineryController {
 
-    @Autowired
-    private MachineryService machineryService;
+    private final MachineryService machineryService;
+
+    public MachineryController(MachineryService machineryService) {
+        this.machineryService = machineryService;
+    }
 
     @GetMapping("/search")
     public String searchPage(Model model) {

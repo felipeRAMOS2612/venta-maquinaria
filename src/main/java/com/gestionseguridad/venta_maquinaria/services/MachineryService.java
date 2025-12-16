@@ -2,7 +2,6 @@ package com.gestionseguridad.venta_maquinaria.services;
 
 import com.gestionseguridad.venta_maquinaria.models.Machinery;
 import com.gestionseguridad.venta_maquinaria.repositories.MachineryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
@@ -13,9 +12,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class MachineryService {
-    
-    @Autowired
-    private MachineryRepository machineryRepository;
+
+    private final MachineryRepository machineryRepository;
 
     public MachineryService(MachineryRepository machineryRepository) {
         this.machineryRepository = machineryRepository;
