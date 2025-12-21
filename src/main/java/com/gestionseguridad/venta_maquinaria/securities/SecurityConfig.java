@@ -4,6 +4,7 @@ import com.gestionseguridad.venta_maquinaria.models.User;
 import com.gestionseguridad.venta_maquinaria.services.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
@@ -23,7 +24,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public SecurityConfig(UserService userService,
-                          JwtAuthenticationFilter jwtAuthenticationFilter) {
+                          @Lazy JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userService = userService;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
@@ -50,17 +51,30 @@ public class SecurityConfig {
                 .ignoringRequestMatchers("/api/**") 
             )
             .authorizeHttpRequests(auth -> auth
-                // Público (vistas + recursos estáticos)
+                // 1. Rutas Públicas
                 .requestMatchers("/", "/search", "/search/**",
                         "/login", "/register",
                         "/css/**", "/js/**", "/images/**").permitAll()
-                // Público: APIs de autenticación
+                
+                // 2. Rutas API Públicas
                 .requestMatchers("/api/auth/**").permitAll()
-                // Protegido con JWT: APIs de negocio
+                
+                // 3. API Protegida
                 .requestMatchers("/api/**").authenticated()
-                // Vistas privadas
-                .requestMatchers("/recipe/**", "/dashboard").authenticated()
-                .requestMatchers("/admin/**").hasRole("DUENO") 
+                
+                // 4. Vistas Generales Protegidas
+                .requestMatchers("/recipe/**", "/dashboard", "/machinery/{id}").authenticated()
+                
+                // 5. ZONA DUEÑO (Gestión de maquinaria)
+                .requestMatchers(
+                    "/admin/**", 
+                    "/machinery/new", 
+                    "/machinery/edit/**", 
+                    "/machinery/save", 
+                    "/machinery/delete/**"
+                ).hasRole("DUENO") 
+                
+                // 6. Resto bloqueado
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

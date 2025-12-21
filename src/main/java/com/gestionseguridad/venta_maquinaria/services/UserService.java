@@ -2,23 +2,24 @@ package com.gestionseguridad.venta_maquinaria.services;
 
 import com.gestionseguridad.venta_maquinaria.models.User;
 import com.gestionseguridad.venta_maquinaria.repositories.UserRepository;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
+    
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder; 
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User saveUser(User user) {
-        user.setPassword(this.passwordEncoder().encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -34,11 +35,6 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    
     public void initializeTestUsers() {
         if (userRepository.count() == 0) {
             List<User> testUsers = List.of(
@@ -49,13 +45,13 @@ public class UserService {
                     .rol(User.Rol.DUENO)
                     .build(),
                 User.builder()
-                    .name("Juan Pérez")
+                    .name("Juan Perez")
                     .email("juan@recetas.com")
                     .password("user123")
                     .rol(User.Rol.AGRICULTOR)
                     .build(),
                 User.builder()
-                    .name("María García")
+                    .name("Maria Garcia")
                     .email("maria@recetas.com")
                     .password("user123")
                     .rol(User.Rol.AGRICULTOR)

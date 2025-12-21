@@ -7,7 +7,6 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
         <nav class="nav">
             <a href="/" class="logo">🚜 AgroRent</a>
@@ -20,12 +19,11 @@
         </nav>
     </header>
 
-    <!-- Contenido principal -->
     <main class="container">
         <h1>Panel de Usuario</h1>
         
         <div class="card">
-            <h2>¡Bienvenido de vuelta! �</h2>
+            <h2>¡Bienvenido de vuelta! 👋</h2>
             <p>Hola <strong sec:authentication="name">Usuario</strong>, gracias por iniciar sesión.</p>
             <p>Ahora puedes acceder a todos los detalles de nuestra maquinaria agrícola disponible para alquiler.</p>
             
@@ -33,6 +31,10 @@
                 <p><strong>Tu rol:</strong> <span sec:authentication="authorities">ROLE_USER</span></p>
                 <p><strong>Estado:</strong> <span style="color: #28a745;">✅ Autenticado</span></p>
             </div>
+        </div>
+
+        <div th:if="${param.success}" class="alert alert-success">
+            ✅ ¡Operación realizada con éxito!
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
@@ -48,14 +50,21 @@
                 <a href="/" class="btn btn-secondary">Ir al Inicio</a>
             </div>
 
-            <div class="card" sec:authorize="hasRole('DUEÑO')">
-                <h3>⚙️ Panel de Dueño</h3>
-                <p>Como dueño de maquinaria, tienes acceso a funciones de gestión especiales.</p>
-                <a href="#" class="btn" style="background: linear-gradient(135deg, #00b894 0%, #00a085 100%);">Panel de Dueño</a>
+            <div class="card" sec:authorize="hasRole('DUENO')">
+                <div style="background: #e8f5e9; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+                    <h3>🚜 Panel de Dueño</h3>
+                </div>
+                <p>Gestiona tu inventario y publicaciones.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <a th:href="@{/machinery/new}" class="btn" style="background: #2e7d32; text-align: center;">
+                        Publicar Nueva Maquinaria
+                    </a>
+
+                </div>
             </div>
         </div>
 
-        <!-- Información adicional -->
         <div class="card">
             <h3>📊 Estadísticas del Catálogo</h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; text-align: center;">
@@ -74,7 +83,6 @@
             </div>
         </div>
 
-        <!-- Acceso rápido -->
         <div class="card">
             <h3>⚡ Acceso Rápido</h3>
             <p>Enlaces directos a las categorías más buscadas:</p>
@@ -86,7 +94,6 @@
             </div>
         </div>
 
-        <!-- Panel específico para agricultores -->
         <div class="card" sec:authorize="hasRole('AGRICULTOR')">
             <h3>🌾 Panel del Agricultor</h3>
             <p>Como agricultor, aquí puedes gestionar tus alquileres y solicitudes:</p>
@@ -97,25 +104,12 @@
             </div>
         </div>
 
-        <!-- Panel específico para dueños -->
-        <div class="card" sec:authorize="hasRole('DUEÑO')">
-            <h3>🚜 Panel del Dueño</h3>
-            <p>Como dueño de maquinaria, aquí puedes gestionar tu inventario:</p>
-            <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;">
-                <button class="btn btn-secondary" onclick="alert('Funcionalidad en desarrollo')">Mi Maquinaria</button>
-                <button class="btn btn-secondary" onclick="alert('Funcionalidad en desarrollo')">Agregar Nueva</button>
-                <button class="btn btn-secondary" onclick="alert('Funcionalidad en desarrollo')">Solicitudes</button>
-                <button class="btn btn-secondary" onclick="alert('Funcionalidad en desarrollo')">Ingresos</button>
-            </div>
-        </div>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <p>&copy; 2025 AgroRent - Alquiler de Maquinaria Agrícola. Todos los derechos reservados.</p>
     </footer>
     
-    <!-- JavaScript -->
     <script th:src="@{/js/app.js}"></script>
 </body>
 </html>

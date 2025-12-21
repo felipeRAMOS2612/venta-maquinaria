@@ -11,22 +11,27 @@ services:
       MYSQL_USER: venta
       MYSQL_PASSWORD: venta123
     ports:
-      - "3307:3306" 
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
+    healthcheck: 
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
   app:
-    build: . 
+    build: .
     container_name: app-venta-maquinaria
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy 
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/venta_maquinaria_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      - SPRING_DATASOURCE_USERNAME=venta
-      - SPRING_DATASOURCE_PASSWORD=venta123
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/venta_maquinaria_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: venta
+      SPRING_DATASOURCE_PASSWORD: venta123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
   sonarqube:
     image: sonarqube:community
@@ -34,7 +39,7 @@ services:
     ports:
       - "9000:9000"
     environment:
-      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
     volumes:
       - sonar_data:/opt/sonarqube/data
       - sonar_extensions:/opt/sonarqube/extensions

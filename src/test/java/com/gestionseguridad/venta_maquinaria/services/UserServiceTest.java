@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,6 +24,8 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder; 
     @InjectMocks
     private UserService userService;
 
@@ -35,13 +38,15 @@ class UserServiceTest {
                 .rol(User.Rol.AGRICULTOR)
                 .build();
 
+        when(passwordEncoder.encode("clavePlana")).thenReturn("claveEncriptada");
+        
         when(userRepository.save(any(User.class))).thenReturn(usuarioNuevo);
 
         User resultado = userService.saveUser(usuarioNuevo);
 
         assertNotNull(resultado);
+        verify(passwordEncoder, times(1)).encode("clavePlana"); 
         verify(userRepository, times(1)).save(any(User.class));
-        assertNotEquals("clavePlana", resultado.getPassword());
     }
 
     @Test
@@ -80,14 +85,9 @@ class UserServiceTest {
     }
 
     @Test
-    void testPasswordEncoderBean() {
-        PasswordEncoder encoder = userService.passwordEncoder();
-        assertNotNull(encoder);
-    }
-
-    @Test
     void testInitializeTestUsers_WhenDbIsEmpty() {
         when(userRepository.count()).thenReturn(0L);
+        when(passwordEncoder.encode(anyString())).thenReturn("claveEncriptada");
         when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArguments()[0]);
 
         userService.initializeTestUsers();

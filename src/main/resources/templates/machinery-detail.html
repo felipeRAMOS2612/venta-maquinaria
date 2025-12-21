@@ -7,7 +7,6 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
         <nav class="nav">
             <a href="/" class="logo">🚜 AgroRent</a>
@@ -45,6 +44,18 @@
                     <div class="machinery-price">
                         <h2 class="price" th:text="'$' + ${machinery.dailyRentalPrice} + '/día'">Precio por día</h2>
                     </div>
+
+                    <div sec:authorize="hasRole('DUENO')" style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #eee;">
+                        <p style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">⚙️ Gestión de Dueño:</p>
+                        <div style="display: flex; gap: 10px;">
+                            <a th:href="@{/machinery/edit/{id}(id=${machinery.id})}" class="btn btn-secondary" style="flex: 1;">✏️ Editar</a>
+                            <a th:href="@{/machinery/delete/{id}(id=${machinery.id})}" 
+                               class="btn btn-secondary" 
+                               style="flex: 1; background: #dc3545; color: white;"
+                               onclick="return confirm('¿Estás seguro de querer eliminar esta maquinaria?');">🗑️ Eliminar</a>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -110,7 +121,6 @@
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <p>&copy; 2025 AgroRent - Alquiler de Maquinaria Agrícola. Todos los derechos reservados.</p>
     </footer>
@@ -292,16 +302,17 @@
         }
     </style>
 
-    <script>
+    <script th:inline="javascript">
         function contactOwner() {
+            // Thymeleaf inserta los valores desde el servidor
             const ownerContact = /*[[${machinery.ownerContact}]]*/ '';
             const machineryName = /*[[${machinery.name}]]*/ '';
             const message = `Hola, estoy interesado en alquilar la maquinaria: ${machineryName}. ¿Podríamos coordinar los detalles?`;
             
             // Abrir WhatsApp si el contacto parece ser un número de teléfono
-            if (ownerContact.includes('+56') || ownerContact.includes('9')) {
-                const phone = ownerContact.replace(/\s+/g, '').replace('+56', '56');
-                const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            if (ownerContact && (ownerContact.includes('+56') || ownerContact.includes('9'))) {
+                const phone = ownerContact.replace(/\s+/g, '').replace('+56', '56').replace(/\D/g, '');
+                const whatsappUrl = `https://wa.me/56${phone}?text=${encodeURIComponent(message)}`;
                 window.open(whatsappUrl, '_blank');
             } else {
                 alert(`Contacta al propietario: ${ownerContact}\n\nMensaje sugerido:\n${message}`);

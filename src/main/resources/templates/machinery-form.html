@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${isEdit} ? 'Editar Maquinaria' : 'Nueva Maquinaria'">Gestión Maquinaria</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="/" class="logo">🚜 AgroRent</a>
+            <ul class="nav-links">
+                <li><a href="/dashboard">Volver al Dashboard</a></li>
+                <li><a href="/logout">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="auth-container" style="max-width: 800px;"> <div class="auth-card">
+                <h1 class="auth-title" th:text="${isEdit} ? 'Editar Maquinaria' : 'Publicar Maquinaria'"></h1>
+
+                <form th:action="@{/machinery/save}" th:object="${machinery}" method="post">
+                    <input type="hidden" th:field="*{id}" />
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Nombre:</label>
+                            <input type="text" th:field="*{name}" class="form-control" required placeholder="Ej: Tractor John Deere">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Marca:</label>
+                            <input type="text" th:field="*{brand}" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Modelo:</label>
+                            <input type="text" th:field="*{model}" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Año:</label>
+                            <input type="number" th:field="*{year}" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Tipo:</label>
+                            <select th:field="*{type}" class="form-control" required>
+                                <option th:each="type : ${types}" 
+                                        th:value="${type}" 
+                                        th:text="${type}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Condición:</label>
+                            <select th:field="*{condition}" class="form-control" required>
+                                <option th:each="cond : ${conditions}" 
+                                        th:value="${cond}" 
+                                        th:text="${cond}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Ubicación:</label>
+                        <input type="text" th:field="*{location}" class="form-control" required placeholder="Región, Ciudad">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Descripción:</label>
+                        <textarea th:field="*{description}" class="form-control" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Instrucciones de Operación:</label>
+                        <textarea th:field="*{operationInstructions}" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Precio Diario ($):</label>
+                            <input type="number" th:field="*{dailyRentalPrice}" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Teléfono Contacto:</label>
+                            <input type="text" th:field="*{ownerContact}" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                        <a href="/dashboard" class="btn btn-secondary" style="text-align:center;">Cancelar</a>
+                        <button type="submit" class="btn">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 AgroRent. Todos los derechos reservados.</p>
+    </footer>
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

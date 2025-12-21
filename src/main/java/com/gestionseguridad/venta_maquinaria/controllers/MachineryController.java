@@ -1,12 +1,14 @@
 package com.gestionseguridad.venta_maquinaria.controllers;
 
 import com.gestionseguridad.venta_maquinaria.models.Machinery;
+import com.gestionseguridad.venta_maquinaria.models.User;
 import com.gestionseguridad.venta_maquinaria.services.MachineryService;
+import com.gestionseguridad.venta_maquinaria.services.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,10 +17,16 @@ import java.util.Optional;
 public class MachineryController {
 
     private final MachineryService machineryService;
+    private final UserService userService; 
 
-    public MachineryController(MachineryService machineryService) {
+    public MachineryController(MachineryService machineryService, UserService userService) {
         this.machineryService = machineryService;
+        this.userService = userService;
     }
+
+    // ==========================================
+    // MÉTODOS DE BÚSQUEDA (LOS QUE FALTABAN)
+    // ==========================================
 
     @GetMapping("/search")
     public String searchPage(Model model) {
@@ -65,5 +73,59 @@ public class MachineryController {
         } else {
             return "redirect:/search";
         }
+    }
+
+    // ==========================================
+    // NUEVOS MÉTODOS (CREAR, EDITAR, GUARDAR)
+    // ==========================================
+
+    @GetMapping("/machinery/new")
+    public String createMachineryForm(Model model) {
+        model.addAttribute("machinery", new Machinery());
+        model.addAttribute("types", Machinery.MachineryType.values()); 
+        model.addAttribute("conditions", Machinery.MachineryCondition.values()); 
+        model.addAttribute("isEdit", false);
+        return "machinery-form";
+    }
+
+    @GetMapping("/machinery/edit/{id}")
+    public String editMachineryForm(@PathVariable Long id, Model model) {
+        Optional<Machinery> machinery = machineryService.getMachineryById(id);
+        
+        if (machinery.isPresent()) {
+            model.addAttribute("machinery", machinery.get());
+            model.addAttribute("types", Machinery.MachineryType.values());
+            model.addAttribute("conditions", Machinery.MachineryCondition.values());
+            model.addAttribute("isEdit", true);
+            return "machinery-form";
+        } else {
+            return "redirect:/search?error=MaquinariaNoEncontrada";
+        }
+    }
+
+    @PostMapping("/machinery/save")
+    public String saveMachinery(@ModelAttribute Machinery machinery) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        User currentUser = userService.getUserByEmail(email);
+
+        if (currentUser != null) {
+            machinery.setOwner(currentUser);
+            machinery.setOwnerName(currentUser.getName());
+            machinery.setOwnerContact(machinery.getOwnerContact() != null ? machinery.getOwnerContact() : currentUser.getEmail());
+        }
+
+        if (machinery.getId() != null) {
+            Optional<Machinery> existing = machineryService.getMachineryById(machinery.getId());
+            existing.ifPresent(val -> machinery.setCreatedAt(val.getCreatedAt()));
+        }
+
+        machineryService.saveMachinery(machinery);
+        return "redirect:/dashboard?success=MaquinariaGuardada";
+    }
+    
+    @GetMapping("/machinery/delete/{id}")
+    public String deleteMachinery(@PathVariable Long id) {
+        return "redirect:/dashboard";
     }
 }
