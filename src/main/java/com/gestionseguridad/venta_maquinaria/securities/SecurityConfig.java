@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -83,9 +84,12 @@ public class SecurityConfig {
                 .failureUrl("/login?error=true")
                 .permitAll()
             )
+            // 2. MODIFICACIÓN AQUÍ: Configuración de Logout
             .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout=true")
+                // Permitimos peticiones GET para /logout (así funciona el enlace <a>)
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                // Al salir, redirigimos a la página de inicio
+                .logoutSuccessUrl("/")
                 .permitAll()
             );
 

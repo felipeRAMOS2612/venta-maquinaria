@@ -40,19 +40,19 @@ public class UserService {
             List<User> testUsers = List.of(
                 User.builder()
                     .name("Administrador")
-                    .email("admin@recetas.com")
+                    .email("dueno@agrorent.com")
                     .password("admin123")
                     .rol(User.Rol.DUENO)
                     .build(),
                 User.builder()
                     .name("Juan Perez")
-                    .email("juan@recetas.com")
+                    .email("juan@agricultor.com")
                     .password("user123")
                     .rol(User.Rol.AGRICULTOR)
                     .build(),
                 User.builder()
                     .name("Maria Garcia")
-                    .email("maria@recetas.com")
+                    .email("maria@agricultor.com")
                     .password("user123")
                     .rol(User.Rol.AGRICULTOR)
                     .build()
